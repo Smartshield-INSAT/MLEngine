@@ -30,19 +30,17 @@ class ModelPreprocessor:
 
     """
 
-    def __init__(self, data_path, model_path=None):
+    def __init__(self, model_path=None):
         """
         Initialize the preprocessor with the path to the dataset and the model.
 
         Args:
-            data_path (str): Path to the parquet file containing the dataset.
             model_path (str): Path to the saved model.
         
         Returns:
             None
 
         """
-        self.df = pd.read_parquet(data_path)
         self.categorical_features = []
         self.numerical_features = []
         self.model = None
@@ -54,6 +52,9 @@ class ModelPreprocessor:
         # If a model path is provided, load the model and retrieve feature names
         if self.model_path:
             self.load_model_and_set_feature_names()
+
+        # Select top categories
+        self.selecting_categories()
 
     def load_model_and_set_feature_names(self):
         """
@@ -103,12 +104,12 @@ class ModelPreprocessor:
             df[column] = df[column].astype('float32')
         return df
 
-    def selecting_categories(self, df):
+    def selecting_categories(self):
         """
         Select the top categories for the 'proto', 'service', and 'state' columns.
 
         Args:
-            df (pd.DataFrame): The input dataframe.
+            None
 
         Returns:
             None
@@ -150,25 +151,21 @@ class ModelPreprocessor:
                 df[feature] = np.log1p(df[feature])
         return df
 
-    def preprocess(self):
+    def preprocess(self, data_path):
         """
         Preprocess the input dataframe.
 
         Args:
-            None
-
+            data_path (str): The path to the input data.
         Returns:
             df (pd.DataFrame): The preprocessed dataframe.
             
         """
-        # Copy the dataframe to avoid modifying the original data
-        df = self.df.copy()
+        # Load the data
+        df =  pd.read_parquet(data_path)
 
         # Select only the features that were used during training
         df = self.feature_selection(df)
-
-        # Select top categories
-        self.selecting_categories(df)
 
         # Transform categories
         df = self.transform_categories(df)
