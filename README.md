@@ -1,26 +1,88 @@
-# SmartShield Machine Learning Models
+# ML Engine
 
-This Repository contains all of Smartshield AI Team work from the data, serialized models, to the tools built and used by the team:
+This repository contains all of the SmartShield AI Team’s work for building, training, and deploying machine learning models, as well as the API and tools necessary for end-to-end machine learning workflows.
 
-- data collection
-- data visualization
-- feature engineering
-- model trainings
-- model config files
-- tests
+## Contents
+
+- **Data Collection**
+- **Feature Engineering**
+- **Model Training and Evaluation**
+- **API App For Ml Engine**
+- **Testing**
 
 ## Folder Structure
 
-- **`data/`**: Directory for all datasets (raw, processed).
-- **`notebooks/`**: Jupyter notebooks for exploration and prototyping.
-- **`src/`**: Source code for data processing, feature engineering, and model training.
-  - **`data/`**: Scripts for loading and processing data.
-  - **`features/`**: Scripts for creating and selecting features.
-  - **`models/`**: Scripts for training and evaluating models.
-  - **`utils/`**: Utility functions.
-  - **`visualization/`**: Scripts for generating data visualizations.
-- **`tests/`**: Unit tests for various modules.
-- **`models/`**: Serialized models.
-- **`config/`**: Store all configuration parameters in YAML files located in the `config/` directory instead of sending parameters as arguments, send config file:
+```plaintext
+├── LICENSE                         # License for the project
+├── README.md                       # Project documentation
+├── __pycache__/                    # Python bytecode cache
+│   └── app.cpython-311.pyc
+├── api_src/                        # Source code for the API application
+│   ├── config                      # Configuration files for the API
+│   ├── logger                      # Logging configuration and utilities
+│   ├── routers                     # API route definitions
+│   ├── schemas                     # API data schemas
+│   ├── services                    # Services used by the API
+│   └── tests                       # API-specific tests
+├── app.py                          # Main application entry point
+├── config/                         # Configuration files for model training
+│   ├── __init__.py
+│   └── train                       # Model training configuration
+├── data/                           # Directory for datasets
+│   ├── UNSW_NB15_data              # Dataset related to UNSW_NB15
+│   └── __init__.py
+├── models/                         # Directory for storing trained models
+│   ├── UNSW_NB15_models            # Serialized UNSW_NB15 models
+│   └── __init__.py
+├── notebooks/                      # Jupyter notebooks for exploration and prototyping
+│   ├── DetectionFeatureEngineering.ipynb  # Feature engineering notebook
+│   ├── UNSW_NB15_notebooks         # Notebooks related to UNSW_NB15 data
+│   └── __init__.py
+├── requirements.txt                # List of dependencies
+├── src/                            # Source code for data processing and model development
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── data                        # Scripts for loading and processing data
+│   ├── features                    # Scripts for creating and selecting features
+│   ├── models                      # Scripts for training and evaluating models
+│   ├── utils                       # Utility functions
+│   └── visualization               # Scripts for generating data visualizations
+├── tests/                          # Unit tests for various modules
+│   ├── UNSW_NB15_tests             # Tests related to the UNSW_NB15 data and models
+│   └── __init__.py
+```
 
-  - `python src/models/model1/train.py --config config/train/model1/config1.py`.
+## Setup and Running the Application
+
+1. **Create a Virtual Environment**  
+   In the project root directory, create a virtual environment:
+   ```bash
+   python -m venv venv
+   ```
+
+2. **Activate the Virtual Environment**  
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+
+3. **Install the Required Dependencies**  
+   Install all required packages by running:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the Application**  
+   Start the ML Engine application with Uvicorn using the following command:
+   ```bash
+   uvicorn app:app --host 0.0.0.0 --port 8002 --workers 16
+   ```
+
+   - **`app:app`**: Specifies the app instance in the main application file.
+   - **`--host 0.0.0.0`**: Makes the app accessible externally.
+   - **`--port 8002`**: Runs the app on port 8002.
+   - **`--workers 16`**: Starts the app with 16 worker processes, allowing concurrent request handling.
