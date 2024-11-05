@@ -6,7 +6,7 @@ from fastapi import UploadFile
 logger = get_logger(__file__)
 
 class PredictAllRequest(BaseModel) : 
-    pass
+    file : UploadFile 
 
 class PredictAttackCatRequest(BaseModel) : 
     file : UploadFile 

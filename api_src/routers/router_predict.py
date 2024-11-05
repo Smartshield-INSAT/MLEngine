@@ -24,9 +24,46 @@ router = APIRouter()
 
 
 @router.post(path="/predict-all")
-async def predict_all(predict_all_request : PredictAllRequest): 
-    pass 
+async def predict_all(file: UploadFile = File(...)): 
+    content = await file.read()
+    parquet_buffer = BytesIO(content)
 
+    try :
+        features = pd.read_parquet(parquet_buffer)
+    except Exception as e :
+        logger.error(f"Failed to read Parquet file.{e}")
+        raise HTTPException(status_code=400 , detail="Failed to read Parquet file.")
+
+    try :
+        preds = await detection_service_instance.apredict_detection(features)
+        
+        # Ensure preds is in JSON-compatible format
+        if isinstance(preds, pd.DataFrame):
+            preds = preds.to_dict(orient="records")  # Convert DataFrame to a list of dictionaries
+        elif isinstance(preds, np.ndarray):
+            preds = preds.tolist()  # Convert numpy array to list
+        elif isinstance(preds, dict):
+            preds = {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in preds.items()}
+
+        logger.debug(f"Predictions : {preds}")
+        preds_cat = await classification_service_instance.apredict_classification(features)
+        
+        # Ensure preds is in JSON-compatible format
+        if isinstance(preds_cat, pd.DataFrame):
+            preds_cat = preds_cat.to_dict(orient="records")
+
+        elif isinstance(preds_cat, np.ndarray):
+            preds_cat = preds_cat.tolist()
+
+        elif isinstance(preds_cat, dict):
+            preds_cat = {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in preds_cat.items()}
+
+        logger.debug(f"Predictions : {preds_cat}")
+
+        return [pred_cat * pred for pred , pred_cat in zip(preds , preds_cat)]
+
+    except Exception as e :
+        logger.error(f"Prediction failed.{e}")
 
 @router.post(path="/predict-attack-cat" ) 
 async def predict_attack_cat(file : UploadFile = File(...)) : 
