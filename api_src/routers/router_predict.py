@@ -7,9 +7,9 @@ from fastapi import APIRouter, HTTPException
 import pandas as pd
 from io import BytesIO
 from api_src.services.service_predict import ServicePredict
-from src.models.UNSW_NB15_models.CatModel import CatModel
+from src.models.UNSW_NB15_models.DetectionModel import DetectionModel
 import numpy as np 
-model = CatModel()
+model = DetectionModel()
 service_instance = ServicePredict(model = model )
 
 

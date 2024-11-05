@@ -1,17 +1,20 @@
-from src.data.UNSW_NB15_preprocessor.Preprocessor import ModelPreprocessor
-import pandas as pd 
-class CatModel:
+from src.data.UNSW_NB15_preprocessor.Preprocessor import Preprocessor
+import pandas as pd
+
+
+class DetectionModel:
     """
     CatBoost model for predicting the attack category.
 
     Attributes:
         data_path (str): The path to the input data.
         model_path (str): The path to the trained model.
-        preprocessor (ModelPreprocessor): The preprocessor object.
+        preprocessor (Preprocessor): The preprocessor object.
         model (CatBoostClassifier): The trained CatBoost model.
 
     Methods:
-        predict: Make predictions using
+        predict: Make predictions using the trained CatBoost model.
+        predict_proba: Make predictions using the trained CatBoost model.
 
     """
     def __init__(self):
@@ -24,8 +27,8 @@ class CatModel:
         Returns:
             None
         """
-        self.model_path = "models/UNSW_NB15_models/catboost_model_94.5_Recall.cbm"
-        self.preprocessor = ModelPreprocessor(self.model_path)
+        self.model_path = "models/UNSW_NB15_models/catboost_detection_model_94.5_Recall.cbm"
+        self.preprocessor = Preprocessor(self.model_path)
         self.model = self.preprocessor.model
 
     def predict(self, df : pd.DataFrame):
@@ -33,7 +36,7 @@ class CatModel:
         Make predictions using the trained CatBoost model.
 
         Args:
-            data_path (str): The path to the input data.
+            df (pd.DataFrame): The input data.
 
         Returns:
             predictions (np.array): The predicted attack categories.
@@ -47,19 +50,19 @@ class CatModel:
         predictions = self.model.predict(df)
         return predictions
 
-    def predict_proba(self, data_path):
+    def predict_proba(self, df : pd.DataFrame):
         """
         Make predictions using the trained CatBoost model.
 
         Args:
-            data_path (str): The path to the input data.
+            df (pd.DataFrame): The input data.
 
         Returns:
             predictions (np.array): The predicted attack categories.
 
         """
         # Preprocess the input data
-        df = self.preprocessor.preprocess(data_path)
+        df = self.preprocessor.preprocess(df)
         df = self.preprocessor.create_pool(df)
 
         # Make predictions

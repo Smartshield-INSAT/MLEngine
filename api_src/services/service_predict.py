@@ -1,4 +1,4 @@
-from src.models.UNSW_NB15_models.CatModel import CatModel
+from src.models.UNSW_NB15_models.DetectionModel import DetectionModel
 import pandas as pd 
 from api_src.logger.logger import get_logger
 
@@ -6,7 +6,7 @@ logger = get_logger(__file__)
 
 
 class ServicePredict() : 
-    def __init__(self , model : CatModel ) : 
+    def __init__(self, model : DetectionModel) :
         self.model = model 
 
     async def apredict_detection(self , features : pd.DataFrame ) : 

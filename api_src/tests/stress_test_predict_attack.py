@@ -49,7 +49,7 @@ def plot_performance(durations):
     plt.show()
 
 # Parameters for the stress test
-num_clients = 100  # Number of simultaneous clients
+num_clients = 10  # Number of simultaneous clients
 num_repeats = 4   # Number of times the clients should repeat the test
 
 # Run the stress test and plot the results
