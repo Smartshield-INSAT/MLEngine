@@ -1,7 +1,6 @@
-from pydantic import BaseModel, Field
-from typing import List , Optional 
-from abc import ABC
+from pydantic import BaseModel
 from api_src.logger.logger import get_logger
+from fastapi import UploadFile
 
 
 logger = get_logger(__file__)
@@ -12,6 +11,6 @@ class PredictAllRequest(BaseModel) :
 class PredictAttackCatRequest(BaseModel) : 
     pass 
 
-class PredictAttackRequest(BaseModel) : 
-    pass 
 
+class PredictAttackRequest(BaseModel):
+    file: UploadFile  # Add more fields if needed

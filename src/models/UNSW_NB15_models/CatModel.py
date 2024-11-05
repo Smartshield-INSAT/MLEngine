@@ -1,4 +1,5 @@
 from src.data.UNSW_NB15_preprocessor.Preprocessor import ModelPreprocessor
+import pandas as pd 
 class CatModel:
     """
     CatBoost model for predicting the attack category.
@@ -23,11 +24,11 @@ class CatModel:
         Returns:
             None
         """
-        self.model_path = "../../models/UNSW_NB15_models/catboost_model_94.5_Recall.cbm"
+        self.model_path = "models/UNSW_NB15_models/catboost_model_94.5_Recall.cbm"
         self.preprocessor = ModelPreprocessor(self.model_path)
         self.model = self.preprocessor.model
 
-    def predict(self, data_path):
+    def predict(self, df : pd.DataFrame):
         """
         Make predictions using the trained CatBoost model.
 
@@ -39,7 +40,7 @@ class CatModel:
 
         """
         # Preprocess the input data
-        df = self.preprocessor.preprocess(data_path)
+        df = self.preprocessor.preprocess(df)
         df = self.preprocessor.create_pool(df)
 
         # Make predictions

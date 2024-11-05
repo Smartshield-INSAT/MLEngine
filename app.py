@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from api_src.config.settings import get_settings
 from api_src.logger.logger import get_logger
+from api_src.routers import router_predict 
 settings = get_settings()
 logger = get_logger(__file__)
 
@@ -21,7 +22,7 @@ ascii_art ="""
 app = FastAPI(
     title="AI API App SMARTSHIELD",
 )
-
+app.include_router(router_predict.router)
 logger.info(f"Starting App : \n {ascii_art}")
 
 logger.info("App Ready")
