@@ -26,7 +26,7 @@ class ClassificationModel:
         Returns:
             None
         """
-        self.model_path = "../../models/UNSW_NB15_models/catboost_classification_model_83_f1.cbm"
+        self.model_path = "models/UNSW_NB15_models/classification_model_84_F1_V2.cbm"
         self.preprocessor = Preprocessor(self.model_path)
         self.model = self.preprocessor.model
 

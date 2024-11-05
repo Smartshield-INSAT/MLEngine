@@ -91,7 +91,6 @@ class Preprocessor:
         df["Total Page Errors"] = np.log1p(df["dur"] * df["sloss"])
         df["Network Usage"] = np.log1p(df["sbytes"] + df["dbytes"])
         df["Network Activity Rate"] = np.log1p(df["spkts"] + df["dpkts"])
-        df["Network Latency"] = np.log1p(df["spkts"] - df["dpkts"])
 
         df = df[self.selected_features] if hasattr(self, 'selected_features') else df
         return df

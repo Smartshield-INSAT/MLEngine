@@ -9,8 +9,12 @@ from io import BytesIO
 from api_src.services.service_predict import ServicePredict
 from src.models.UNSW_NB15_models.DetectionModel import DetectionModel
 import numpy as np 
-model = DetectionModel()
-service_instance = ServicePredict(model = model )
+from api_src.services.service_predict_cat import ServicePredictCat
+from src.models.UNSW_NB15_models.ClassificationModel import ClassificationModel
+detection_model = DetectionModel()
+detection_service_instance = ServicePredict(model = detection_model)
+classification_model = ClassificationModel()
+classification_service_instance = ServicePredictCat(model = classification_model)
 
 
 logger = get_logger(__file__)
@@ -25,11 +29,33 @@ async def predict_all(predict_all_request : PredictAllRequest):
 
 
 @router.post(path="/predict-attack-cat" ) 
-async def predict_attack_cat(predict_attack_cat_request : PredictAttackCatRequest): 
-    pass 
+async def predict_attack_cat(file : UploadFile = File(...)) : 
+    content = await file.read()
+    parquet_buffer = BytesIO(content)
+
+    try :
+        features = pd.read_parquet(parquet_buffer)
+    except Exception as e :
+        raise HTTPException(status_code=400 , detail="Failed to read Parquet file.")
+
+    try :
+        preds = await classification_service_instance.apredict_classification(features)
+        
+        # Ensure preds is in JSON-compatible format
+        if isinstance(preds, pd.DataFrame):
+            preds = preds.to_dict(orient="records")  # Convert DataFrame to a list of dictionaries
+        elif isinstance(preds, np.ndarray):
+            preds = preds.tolist()  # Convert numpy array to list
+        elif isinstance(preds, dict):
+            preds = {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in preds.items()}
+
+        return {"predictions": preds}
+    except Exception as e :
+        raise HTTPException(status_code=500 , detail="Prediction failed.")
+    
 
 
-@router.post("/predict-attack")
+@router.post(path="/predict-attack")
 async def predict_attack(file: UploadFile = File(...)):
     content = await file.read()
     parquet_buffer = BytesIO(content)
@@ -40,7 +66,7 @@ async def predict_attack(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Failed to read Parquet file.")
 
     try:
-        preds = await service_instance.apredict_detection(features)
+        preds = await detection_service_instance.apredict_detection(features)
         
         # Ensure preds is in JSON-compatible format
         if isinstance(preds, pd.DataFrame):

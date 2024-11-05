@@ -9,8 +9,8 @@ class PredictAllRequest(BaseModel) :
     pass
 
 class PredictAttackCatRequest(BaseModel) : 
-    pass 
+    file : UploadFile 
 
 
 class PredictAttackRequest(BaseModel):
-    file: UploadFile  # Add more fields if needed
+    file : UploadFile  # Add more fields if needed

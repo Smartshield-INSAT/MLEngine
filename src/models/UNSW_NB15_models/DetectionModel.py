@@ -27,7 +27,7 @@ class DetectionModel:
         Returns:
             None
         """
-        self.model_path = "models/UNSW_NB15_models/catboost_detection_model_94.5_Recall.cbm"
+        self.model_path = "models/UNSW_NB15_models/detection_model_94_recall_V2.cbm"
         self.preprocessor = Preprocessor(self.model_path)
         self.model = self.preprocessor.model
 
