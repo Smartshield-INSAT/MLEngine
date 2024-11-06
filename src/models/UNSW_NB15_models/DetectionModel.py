@@ -66,5 +66,5 @@ class DetectionModel:
         df = self.preprocessor.create_pool(df)
 
         # Make predictions
-        predictions = self.model.predict_proba(df)
+        predictions = self.model.predict_proba(df)[:, 1]
         return predictions

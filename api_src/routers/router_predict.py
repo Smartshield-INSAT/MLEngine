@@ -45,7 +45,6 @@ async def predict_all(file: UploadFile = File(...)):
         elif isinstance(preds, dict):
             preds = {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in preds.items()}
 
-        logger.debug(f"Predictions : {preds}")
         preds_cat = await classification_service_instance.apredict_classification(features)
         
         # Ensure preds is in JSON-compatible format
@@ -58,7 +57,6 @@ async def predict_all(file: UploadFile = File(...)):
         elif isinstance(preds_cat, dict):
             preds_cat = {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in preds_cat.items()}
 
-        logger.debug(f"Predictions : {preds_cat}")
 
         return [pred_cat * pred for pred , pred_cat in zip(preds , preds_cat)]
 
