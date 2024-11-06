@@ -11,11 +11,11 @@ path = os.path.join("api_src", "tests", "10_samples.parquet")
 # Define the URL of the FastAPI endpoint
 url = "http://127.0.0.1:8002/predict-attack"
 
-# Read the Parquet file into a buffer
-with open(path, "rb") as file:
-    parquet_buffer = BytesIO(file.read())
-
 async def send_request(client):
+    # Create a new buffer for each request
+    with open(path, "rb") as file:
+        parquet_buffer = BytesIO(file.read())
+
     # Send a POST request with the Parquet file and measure the response time
     files = {'file': ("10_samples.parquet", parquet_buffer, "application/octet-stream")}
     start_time = time.time()
@@ -49,8 +49,8 @@ def plot_performance(durations):
     plt.show()
 
 # Parameters for the stress test
-num_clients = 10  # Number of simultaneous clients
-num_repeats = 4   # Number of times the clients should repeat the test
+num_clients = 100  # Number of simultaneous clients
+num_repeats = 4    # Number of times the clients should repeat the test
 
 # Run the stress test and plot the results
 durations = asyncio.run(stress_test(num_clients, num_repeats))
