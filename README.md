@@ -79,10 +79,10 @@ This repository contains all of the SmartShield AI Team’s work for building, t
 4. **Run the Application**  
    Start the ML Engine application with Uvicorn using the following command:
    ```bash
-   uvicorn app:app --host 0.0.0.0 --port 8002 --workers 16
+   uvicorn app:app --host 0.0.0.0 --port 8002 --workers 8
    ```
 
    - **`app:app`**: Specifies the app instance in the main application file.
    - **`--host 0.0.0.0`**: Makes the app accessible externally.
    - **`--port 8002`**: Runs the app on port 8002.
-   - **`--workers 8`**: Starts the app with 16 worker processes, allowing concurrent request handling.
+   - **`--workers 8`**: Starts the app with 8 worker processes, allowing concurrent request handling.

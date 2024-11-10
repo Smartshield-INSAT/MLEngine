@@ -2,6 +2,7 @@ import httpx
 import os
 import asyncio
 import time
+import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 
@@ -26,8 +27,6 @@ async def send_request(client):
 
 async def stress_test(num_clients, num_repeats):
     durations = []
-    success_count = 0
-    error_count = 0
 
     async with httpx.AsyncClient() as client:
         for _ in range(num_repeats):
@@ -37,33 +36,26 @@ async def stress_test(num_clients, num_repeats):
 
             # Collect response times and statuses
             for status, duration in results:
-                durations.append(duration)
                 if status == 200:
-                    success_count += 1
-                else:
-                    error_count += 1
+                    durations.append(duration)
 
-    return durations, success_count, error_count
+    return durations
 
-def plot_performance(durations, success_count, error_count):
+
+def plot_performance(durations, window_size=10):
+    # Calculate moving average of response times
+    moving_avg = np.convolve(durations, np.ones(window_size) / window_size, mode="valid")
+
     # Plot the response durations and success/error rates
     plt.figure(figsize=(12, 10))
 
-    # Plot response times
+    # Plot response times and moving average
     plt.subplot(2, 1, 1)
-    plt.plot(durations, marker="o", linestyle="--", color="blue")
+    plt.plot(durations, marker="o", linestyle="--", color="blue", label="Response Time")
+    plt.plot(range(window_size - 1, len(durations)), moving_avg, color="red", linestyle="-", label=f"{window_size}-Request Moving Average")
     plt.xlabel("Request Number")
     plt.ylabel("Response Time (seconds)")
-    plt.title("Server Response Time for Concurrent Requests")
-
-    # Plot success and error rate
-    plt.subplot(2, 1, 2)
-    total_requests = success_count + error_count
-    success_rate = (success_count / total_requests) * 100 if total_requests else 0
-    error_rate = (error_count / total_requests) * 100 if total_requests else 0
-    plt.bar(["Success Rate", "Error Rate"], [success_rate, error_rate], color=["green", "red"])
-    plt.ylabel("Percentage (%)")
-    plt.title("Success and Error Rate")
+    plt.legend()
 
     plt.tight_layout()
     plt.show()
@@ -73,5 +65,5 @@ num_clients = 100  # Number of simultaneous clients
 num_repeats = 4    # Number of times the clients should repeat the test
 
 # Run the stress test and plot the results
-durations, success_count, error_count = asyncio.run(stress_test(num_clients, num_repeats))
-plot_performance(durations, success_count, error_count)
+durations= asyncio.run(stress_test(num_clients, num_repeats))
+plot_performance(durations)

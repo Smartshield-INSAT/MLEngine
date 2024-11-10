@@ -48,3 +48,22 @@ class ClassificationModel:
         # Make predictions
         predictions = self.model.predict(df)
         return predictions
+
+    def predict_proba(self, df : pd.DataFrame):
+        """
+        Make predictions using the trained CatBoost model.
+
+        Args:
+            df (pd.DataFrame): The input data.
+
+        Returns:
+            predictions (np.array): The predicted attack categories.
+
+        """
+        # Preprocess the input data
+        df = self.preprocessor.preprocess(df)
+        df = self.preprocessor.create_pool(df)
+
+        # Make predictions
+        predictions = self.model.predict_proba(df)
+        return predictions

@@ -6,7 +6,7 @@ from io import BytesIO
 path = os.path.join("api_src", "tests" , "10_samples.parquet")
 
 # Define the URL of the FastAPI endpoint
-url = "http://127.0.0.1:8002/predict-all"
+url = "http://192.168.100.88:8002/predict-all"
 
 # Read the Parquet file into a buffer
 with open(path, "rb") as file:
